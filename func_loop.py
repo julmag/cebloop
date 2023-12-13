@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import water_tank as wt
-from water_tank.Supplements import arm_data, video, visualize, pearson, mse_func, vis_sum_2p, vis_sum_4p
+from water_tank.Supplements import arm_data, video, visualize, pearson, mse_func, vis_sum_2p, vis_sum_4p, timer
 import time
 
 def loop_model(version):
     # Number of time steps
-    n = 10000
+    n = 50
     f_input, i_input, f_target, i_target, goals = arm_data(trial_duration=n)
     input_stacked = np.concatenate((f_input, goals), axis=1)
     target_stacked =  np.concatenate((f_target, i_target), axis=1)
@@ -26,7 +26,7 @@ def loop_model(version):
 
 
     # Training / test
-    split = 8000
+    split = 10
 
 
     # Supervised training
@@ -55,7 +55,7 @@ def loop_model(version):
 
 
 
-loops = 100
+loops = 2
 start_time = time.time()
 im, ip, fm, fp = [], [], [], []
 
@@ -70,20 +70,18 @@ for i in range(loops):
     fp.append(forward_pearson)
 
     loop_end = time.time()
-    time_taken = loop_end - loop_start
-
+    loop_time = loop_end - loop_start
     time_elapsed = loop_end - start_time
-    time_per_iteration = time_elapsed / (i + 1)
-    remaining_iterations = loops - (i + 1)
-    remaining_time = remaining_iterations * time_per_iteration
 
-    minutes, seconds = divmod(remaining_time, 60)
-    print(f"Loop {i + 1}/{loops} | Time taken: {time_taken//60:.0f}:{time_taken%60:.0f} | Elapsed: {time_elapsed//60:.0f}:{time_elapsed%60:.0f} | Remaining: {minutes:.0f}:{seconds:.0f}")
+    formatted_loop_time, formatted_time_elapsed, formatted_remaining_time = timer(loop_time , time_elapsed , loops, i)
 
-total_time = time.time() - start_time
+    print(f"Loop {i + 1}/{loops} | Time taken: {formatted_loop_time} | Elapsed: {formatted_time_elapsed} | Remaining: {formatted_remaining_time}")
+    
 
-total_minutes, total_seconds = divmod(total_time, 60)
-print(f"Total execution time: {total_minutes:.0f}:{total_seconds:.0f}")
+time_elapsed = time.time() - start_time
+_, formatted_time_elapsed, _ = timer(time_elapsed , time_elapsed , loops, loops)
+
+print(f"Total execution time: {formatted_time_elapsed}")
 
 
 
@@ -94,3 +92,7 @@ forward_pearson = np.array(fp)
 
 vis_sum_4p(inverse_mse, inverse_pearson, "Inverse", save_pic=True)
 vis_sum_4p(forward_mse, forward_pearson, "Forward", save_pic=True)
+
+
+# Printing the formatted time
+

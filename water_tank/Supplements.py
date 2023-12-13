@@ -547,3 +547,26 @@ def vis_sum_4p(mse, pearson, name, save_pic=False):
 
 
 
+def timer(loop_time , time_elapsed , loops, iteration):
+    hours_taken = int(loop_time // 3600)
+    minutes_taken = int((loop_time % 3600) // 60)
+    seconds_taken = int(loop_time % 60)
+    formatted_loop_time = f"{hours_taken:02d}:{minutes_taken:02d}:{seconds_taken:02d}"
+
+    hours_elapsed = int(time_elapsed // 3600)
+    minutes_elapsed = int((time_elapsed % 3600) // 60)
+    seconds_elapsed = int(time_elapsed % 60)
+    formatted_time_elapsed = f"{hours_elapsed:02d}:{minutes_elapsed:02d}:{seconds_elapsed:02d}"
+
+    time_per_iteration = time_elapsed / (iteration + 1)
+    remaining_iterations = loops - (iteration + 1)
+    remaining_time = remaining_iterations * time_per_iteration
+
+    # Convert remaining_time to hours, minutes, and seconds
+    hours_remaining = int(remaining_time // 3600)
+    minutes_remaining = int((remaining_time % 3600) // 60)
+    seconds_remaining = int(remaining_time % 60)
+    formatted_remaining_time = f"{hours_remaining:02d}:{minutes_remaining:02d}:{seconds_remaining:02d}"
+
+    return formatted_loop_time, formatted_time_elapsed, formatted_remaining_time
+
